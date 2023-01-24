@@ -1,8 +1,26 @@
 from flask import Flask  # First 5 lines are how you define an API
 from flask_restful import Api, Resource, reqparse, abort
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 api = Api(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+db = SQLAlchemy(app)  # Wrapping inside a database
+
+
+class VideoModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    views = db.Column(db.Integer, nullable=False)
+    likes = db.Column(db.Integer, nullable=False)
+    comments = db.Column(db.Integer, nullable=False)
+
+    def __repr__(self):
+        return f"Video(name = {self.name}, views = {self.views}, likes = {self.likes}, comments = {self.comments})"
+
+
+# with app.app_context():
+#     db.create_all()  # This code should be run only once, otherwise it will overwrite the existing database
 
 names = {"Beray": {"age": 21, "gender": "male"},  # Dictionary
          "Edis": {"age": 21, "gender": "male"}}
